@@ -90,10 +90,10 @@ try {
                         </button>
                     </div>
                     <div className="grid grid-cols-2 gap-10 mt-15">
-                        <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11" type="text" placeholder="Full name" />
-                        <input value={email} onChange={(e) => setEmail(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11" type="email" placeholder="Email address" />
-                        <input value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11" type="number" placeholder="Phone number" />
-                        <input value={password} onChange={(e) => setPassword(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11" type="password" placeholder="Password" />
+                        <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11" type="text" placeholder="Full name" required/>
+                        <input value={email} onChange={(e) => setEmail(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11" type="email" placeholder="Email address" required/>
+                        <input value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11" type="number" placeholder="Phone number" required/>
+                        <input value={password} onChange={(e) => setPassword(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11" type="password" placeholder="Password" required/>
                         <select value={gender} onChange={(e) => setGender(e.target.value)} className="border border-[#A7A7A7] rounded pl-3 w-full h-11">
                             <option value="erkak">Erkak</option>
                             <option value="ayol">Ayol</option>
