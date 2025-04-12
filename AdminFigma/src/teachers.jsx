@@ -2,20 +2,24 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import logo from "./images/logo.svg";
 import NotFound from "./NotFound";
-import { faHome, faUserGraduate, faBuildingColumns, faGear, faChartSimple, faHeadset, faBell,} 
+import { faHome, faUserGraduate, faBuildingColumns, faGear, faChartSimple, faHeadset, faBell, } 
 from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Teachers() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const [searchField, setSearchField] = useState("fullname"); 
 
   useEffect(() => {
     fetch("https://api.ashyo.fullstackdev.uz/users")
       .then((res) => res.json())
       .then((data) => {
         setUsers(data);
+        setFilteredUsers(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -23,6 +27,21 @@ function Teachers() {
         setLoading(false);
       });
   }, []);
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    const filteredUsers = users.filter((user) => {
+      if (searchField === "fullname") {
+        return user.fullname.toLowerCase().includes(query);
+      } else if (searchField === "email") {
+        return user.email.toLowerCase().includes(query);
+      }
+      return false;
+    });
+    setFilteredUsers(filteredUsers);
+  };
 
   return (
     <div className="container flex m-auto">
@@ -33,8 +52,7 @@ function Teachers() {
         <h4 className="text-center text-white mt-6">Udemy Inter. school</h4>
         <hr className="text-[#BDBDBD] mt-[27px]" />
         <div className="flex flex-col justify-center items-center gap-2 mt-4">
-          <button
-            onClick={() => navigate("/dashboard")} className="w-[90%] h-10 border border-amber-50 rounded hover:bg-[#509CDB]">
+          <button onClick={() => navigate("/dashboard")} className="w-[90%] h-10 border border-amber-50 rounded hover:bg-[#509CDB]">
             <p className="text-white text-[14px]"><FontAwesomeIcon icon={faHome} className="mr-2" />
             Dashboard
             </p>
@@ -80,26 +98,31 @@ function Teachers() {
             </button>
           </menu>
           <div className="flex justify-between items-center mt-4 font-medium">
-            <p className="text-[20px] text-[#4F4F4F]">Teachers</p>
+            <p className="text-[20px] text-[#4F4F4F] font-bold">Teachers</p>
             <button onClick={() => navigate("/students")} className="w-30 h-10 bg-[#152259] border-amber-50 rounded hover:bg-[#509CDB]">
             <p className="text-white">Add Teachers</p>
             </button>
           </div>
-          <div className="flex justify-center items-center">
-            <input type="text" className="w-full h-10 rounded mt-4 pl-10 bg-[#FCFAFA]" placeholder="Search for a student by name or email"
-            />
+          
+          <div className="flex items-center gap-[10px] mt-4">
+            <select  onChange={(e) => setSearchField(e.target.value)}  value={searchField}  className="mt-4 w-[10%] h-10 rounded bg-[#FCFAFA]" >
+              <option className="text-[10x]" value="fullname">Full Name</option>
+              <option className="text-[10x]" value="email">Email</option>
+            </select>
+            <input  type="text"  className="w-full h-10 rounded mt-4 pl-10 bg-[#FCFAFA]"  placeholder="Search for a teacher" value={searchQuery} onChange={handleSearch} />
           </div>
-          <div className=" h-[419px] mt-[30px] rounded bg-[#FCFAFA] p-5 overflow-auto">
+          
+          <div className="h-[419px] mt-[30px] rounded bg-[#FCFAFA] p-5 overflow-auto">
             {loading ? (
               <p>Yuklanmoqda...</p>
-            ) : users.length === 0 ? (
+            ) : filteredUsers.length === 0 ? (
               <NotFound />
             ) : (
               <table className="w-[400px]">
                 <thead>
                   <tr>
                     <th className="py-1 px-2 border">ID</th>
-                    <th className="py-1 px-2 border">FellName</th>
+                    <th className="py-1 px-2 border">FullName</th>
                     <th className="py-1 px-2 border">Email</th>
                     <th className="py-1 px-2 border">Password</th>
                     <th className="py-1 px-2 border">Sana</th>
@@ -107,24 +130,25 @@ function Teachers() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user) => (
+                  {filteredUsers.map((user) => (
                     <tr key={user.id}>
                       <td className="py-1 px-2 border">{user.id}</td>
                       <td className="py-1 px-2 border">{user.fullname}</td>
                       <td className="py-1 px-2 border">{user.email}</td>
                       <td className="py-1 px-2 border">{user.password}</td>
                       <td className="py-1 px-2 border">{user.createdAt} <br />{user.updatedAt}</td>
-                     <td className="py-1 px-2 border">
-                     <button onClick={() => navigate(`/teachers/${user.id}`)} className="bg-[#152259] text-white hover:bg-[#509CDB] hover:border-none p-1  border rounded">
-                    Profil
-                    </button>
-                     </td>
+                      <td className="py-1 px-2 border">
+                        <button onClick={() => navigate(`/teachers/${user.id}`)} className="bg-[#152259] text-white hover:bg-[#509CDB] hover:border-none p-1  border rounded">
+                          Profil
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             )}
           </div>
+          
           <div className="flex justify-end mr-5">
             <button className="w-[181px] h-15 bg-[#152259] rounded-[30px] border-amber-50 hover:bg-[#509CDB] mt-4">
               <p className="text-white"><FontAwesomeIcon icon={faHeadset} className="mr-2" />
